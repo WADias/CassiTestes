@@ -1,0 +1,34 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Login CASSI - CPF ou CNPJ', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('https://servicosonline.hml.cassi.com.br/GASC/v2/Usuario/Login/Prestador');
+    await page.getByRole('button', { name: /prestador/i }).click();
+  });
+
+  test('deve realizar login com CNPJ válido', async ({ page }) => {
+    const cpfInput = page.getByRole('textbox', { name: /CPF ou CNPJ/i });
+    await cpfInput.waitFor({ state: 'visible' });
+    await cpfInput.click();
+    await cpfInput.pressSequentially('78973385000160');
+
+    const autenticarButton = page.getByRole('button', { name: /autenticar/i });
+    await expect(autenticarButton).toBeEnabled();
+    await autenticarButton.click();
+
+    const senhaInput = page.locator('#senha');
+    await senhaInput.waitFor({ state: 'visible' });
+    await senhaInput.fill('cassi123456');
+
+    const realizarLoginButton = page.getByRole('button', { name: /realizar login/i });
+    await expect(realizarLoginButton).toBeEnabled();
+    await realizarLoginButton.click();
+
+    await expect(page).toHaveURL(/PortalServicos\/Prestador/i);
+
+    await expect(page.getByText(/MENSAGEM IMPORTANTE/i)).toBeVisible();
+    await page.getByRole('button', { name: /fechar/i }).click();
+    
+    await expect(page.getByText(/Prestador - Portal de Serviços/i)).toBeVisible();
+  }); 
+});
