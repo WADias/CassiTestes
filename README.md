@@ -44,8 +44,8 @@ npm install
 Crie ou ajuste o arquivo `tests/.env` com os valores corretos:
 
 ```env
-CASSI_CPF=44242107900
-CASSI_CNPJ=78973385000160
+CASSI_CPF="Valor Correto"
+CASSI_CNPJ="Valor Correto"
 CASSI_SENHA=sua_senha
 ```
 
