@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import path from 'path';
 
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const cnpj = process.env.CASSI_CNPJ;
 const senha = process.env.CASSI_SENHA;
@@ -10,6 +11,7 @@ const senha = process.env.CASSI_SENHA;
 test.describe('Login CASSI - CPF ou CNPJ', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('https://servicosonline.hml.cassi.com.br/GASC/v2/Usuario/Login/Prestador');
+    await page.getByRole('button', { name: /prestador/i }).click();
   });
 
   test('deve realizar login com CNPJ válido', async ({ page }) => {
@@ -17,7 +19,7 @@ test.describe('Login CASSI - CPF ou CNPJ', () => {
       throw new Error('CASSI_CNPJ ou CASSI_SENHA não foram configurados no arquivo .env');
     }
 
-    const cpfInput = page.getByRole('textbox', { name: /CPF ou CNPJ/i });
+    const cpfInput = page.locator('#cpfCnpj');
     await cpfInput.waitFor({ state: 'visible' });
     await cpfInput.click();
     await cpfInput.pressSequentially(cnpj);

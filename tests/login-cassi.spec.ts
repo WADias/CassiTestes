@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import path from 'path';
 
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const cpf = process.env.CASSI_CPF;
 const senha = process.env.CASSI_SENHA;
@@ -19,10 +20,10 @@ test.describe('Login CASSI - CPF ou CNPJ', () => {
       throw new Error('CASSI_CPF e CASSI_SENHA devem estar definidas no .env');
     }
 
-    const cpfInput = page.getByRole('textbox', { name: /CPF ou CNPJ/i });
+    const cpfInput = page.locator('#cpfCnpj');
     await cpfInput.waitFor({ state: 'visible' });
     await cpfInput.click();
-    await cpfInput.fill(cpf);
+    await cpfInput.pressSequentially(cpf);
 
     const autenticarButton = page.getByRole('button', { name: /autenticar/i });
     await expect(autenticarButton).toBeEnabled();
